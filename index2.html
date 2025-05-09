@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Upload Foto Gudang</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <h2>Ambil Foto Barang</h2>
+    <input type="file" accept="image/*" capture="environment" id="fotoInput" />
+    <br /><br />
+    <button onclick="uploadFoto()">Upload Foto</button>
+    <p id="status"></p>
+
+    <script>
+      async function uploadFoto() {
+        const input = document.getElementById("fotoInput");
+        const file = input.files[0];
+        if (!file) return alert("Ambil atau pilih foto dulu!");
+
+        const reader = new FileReader();
+        reader.onloadend = async function () {
+          const base64 = reader.result.split(",")[1];
+          document.getElementById("status").innerText = "Mengupload...";
+
+          const formData = new FormData();
+          formData.append("image", base64);
+
+          const response = await fetch("https://script.google.com/macros/s/AKfycbx1uxUr9s1ctngPx0KDXKV4uJ8Bui0a2XGGR3rcaAfDCxK2Q97CiSI67jbl4vWCJqMMwA/exec", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.text();
+          document.getElementById("status").innerText = result;
+        };
+        reader.readAsDataURL(file);
+      }
+    </script>
+  </body>
+</html>
